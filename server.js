@@ -13,7 +13,7 @@ server.use(cors({
     origin: '*'
 }));
 
-server.get('/', async (req, res) => {
+server.get('/all-articles', async (req, res) => {
     try {
         const response = await queryDatabase(databaseId);
         const pagePromises = response.results.map(async (page) => {
@@ -26,6 +26,21 @@ server.get('/', async (req, res) => {
 
         const pagesWithContent = await Promise.all(pagePromises);
         res.json(pagesWithContent);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+});
+
+server.get('/article', async (req, res) => {
+    const id = req.query.id;
+    try {
+        const page = await retrievePage(id);
+        const pageWithContent =  {
+            ...page,
+            pageContent: jsonToHtml(page)
+        }
+        res.json(pageWithContent);
     } catch (error) {
         console.error(error);
         res.status(500).send('Server Error');
