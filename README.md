@@ -1,5 +1,5 @@
 # Use a Notion Table Database as a super simple CMS
-Simple node.js repo to fetch a Notion table via NotionAPI, including each page's attributes and its content. It translates the content into HTML and adds it to the objects, then returns the entire thing as a JSON to the client.
+Simple node.js server to fetch a Notion table via NotionAPI, including each page's attributes and its content. It translates the content into HTML and adds it to the objects, then returns the entire thing as a JSON to the client.
 
 ## On the client, to retrieve all articles with content
 ```javascript
