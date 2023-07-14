@@ -17,7 +17,7 @@ server.get('/all-articles', async (req, res) => {
     try {
         const response = await queryDatabase(databaseId);
         const pagePromises = response.results.map(async (page) => {
-            const pageContent = await retrievePage(page.id);
+            const pageContent = await retrieveBlocksForPage(page.id);
             return {
                 ...page,
                 pageContent: jsonToHtml(pageContent)
@@ -36,9 +36,10 @@ server.get('/article', async (req, res) => {
     const id = req.query.id;
     try {
         const page = await retrievePage(id);
+        const pageBlocks = await retrieveBlocksForPage(id);
         const pageWithContent =  {
             ...page,
-            pageContent: jsonToHtml(page)
+            pageContent: jsonToHtml(pageBlocks)
         }
         res.json(pageWithContent);
     } catch (error) {
@@ -48,7 +49,7 @@ server.get('/article', async (req, res) => {
 });
 
 server.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`Example app listening on port ${port}`);
 });
 
 async function queryDatabase(databaseId) {
@@ -63,6 +64,15 @@ async function queryDatabase(databaseId) {
 }
 
 async function retrievePage(pageId) {
+    try {
+        const response = await notion.pages.retrieve({ page_id: pageId });
+        return response;
+    } catch (error){
+        console.log(error.body);
+    }
+}
+
+async function retrieveBlocksForPage(pageId) {
     try {
         const response = await notion.blocks.children.list({
             block_id: pageId,
