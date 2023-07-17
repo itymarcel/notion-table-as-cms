@@ -5,10 +5,12 @@ import { Client } from "@notionhq/client";
 
 const server = express();
 const port = 3001;
+
+dotenv.config();
+
 const notion = new Client({ auth: process.env.NOTION_KEY });
 const databaseId = process.env.NOTION_DATABASE_ID;
 
-dotenv.config();
 server.use(cors({
     origin: '*'
 }));
